@@ -1,7 +1,8 @@
-import { CustomError } from "../utils/customError";
+import { CustomError } from "../utils/customError.js";
+import prisma from "../db/index.js";
 
 export const RoleAccess = Object.freeze({
-  ADMIN: "ADMIN",
+  ADMIN: "ADMIN", // Role: Manager, Staff
   MEMBER: "MEMBER",
   GUEST: "GUEST",
 });

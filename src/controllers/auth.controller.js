@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import {
-  LoginSchema as loginSchema,
-  RegisterSchema as registerSchema,
+  LoginSchema,
+  RegisterSchema,
 } from "../utils/validations/auth.validation.js";
 import { AuthService } from "../services/auth.service.js";
 import { CustomError } from "../utils/customError.js";
@@ -13,7 +13,7 @@ export const AuthController = {
     _next
   ) => {
     try {
-      await registerSchema.validate(req.body, {
+      await RegisterSchema.validate(req.body, {
         abortEarly: false,
       });
 
@@ -34,7 +34,7 @@ export const AuthController = {
 
   Login: async (req, res, _next) => {
     try {
-      await loginSchema.validate(req.body, {
+      await LoginSchema.validate(req.body, {
         abortEarly: false,
       });
 
