@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import authRoutes from './routes/auth.route.js';
+import teamRoutes from './routes/team.route.js';
+import topicRoutes from './routes/topic.route.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 
 const PORT = process.env.PORT || 4000;
@@ -23,6 +25,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api", authRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api/topic", topicRoutes);
 
 app.use(
   (err, req, res, next) => {
