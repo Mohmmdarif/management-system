@@ -24,9 +24,9 @@ model User {
   teams         UserTeam[]
   comments      Comment[]
   tasksOwned    Task[]         @relation("OwnerTasks")
-  tasksAssigned Task[]         @relation("AssigneeTasks") // 👈 relasi balik ke Task.assignee
-  documents     Document[]     @relation("UserDocuments") // 👈 relasi balik ke Document.uploadedBy
-  notifications Notification[] @relation("UserNotifications") // 👈 relasi balik ke Notification.user
+  tasksAssigned Task[]         @relation("AssigneeTasks")
+  documents     Document[]     @relation("UserDocuments")
+  notifications Notification[] @relation("UserNotifications")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -45,7 +45,7 @@ model UserTeam {
   id       String   @id @default(uuid())
   user     User     @relation(fields: [userId], references: [id])
   userId   String
-  team     Team     @relation(fields: [teamId], references: [id])
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId   String
   role     TeamRole @default(MEMBER)
   joinedAt DateTime @default(now())
@@ -55,7 +55,7 @@ model UserTeam {
 
 model Topic {
   id        String     @id @default(uuid())
-  team      Team       @relation(fields: [teamId], references: [id])
+  team      Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId    String
   title     String
   subtopics Subtopic[]
@@ -65,7 +65,7 @@ model Topic {
 
 model Subtopic {
   id        String   @id @default(uuid())
-  topic     Topic    @relation(fields: [topicId], references: [id])
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
   topicId   String
   title     String
   tasks     Task[]
@@ -90,11 +90,11 @@ model Task {
   id          String     @id @default(uuid())
   title       String
   description String?
-  assignee    User?      @relation("AssigneeTasks", fields: [assigneeId], references: [id]) // 👈 relasi named
+  assignee    User?      @relation("AssigneeTasks", fields: [assigneeId], references: [id])
   assigneeId  String?
   owner       User       @relation("OwnerTasks", fields: [ownerId], references: [id])
   ownerId     String
-  subtopic    Subtopic?  @relation(fields: [subtopicId], references: [id])
+  subtopic    Subtopic?  @relation(fields: [subtopicId], references: [id], onDelete: Cascade)
   subtopicId  String?
   status      Status     @default(TODO)
   priority    Priority   @default(MEDIUM)
@@ -112,7 +112,7 @@ model Comment {
   body      String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  task      Task     @relation(fields: [taskId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId    String
   createdAt DateTime @default(now())
 }
@@ -123,7 +123,7 @@ model Document {
   url          String
   uploadedBy   User     @relation("UserDocuments", fields: [uploadedById], references: [id])
   uploadedById String
-  task         Task?    @relation(fields: [taskId], references: [id])
+  task         Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId       String?
   createdAt    DateTime @default(now())
 }
