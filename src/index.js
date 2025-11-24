@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/auth.route.js';
 import teamRoutes from './routes/team.route.js';
 import topicRoutes from './routes/topic.route.js';
+import taskRoutes from './routes/task.route.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 
 const PORT = process.env.PORT || 4000;
@@ -25,8 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api", authRoutes);
-app.use("/api/teams", teamRoutes);
-app.use("/api/teams", topicRoutes);
+app.use("/api/teams", teamRoutes, topicRoutes, taskRoutes);
 
 app.use(
   (err, req, res, next) => {

@@ -59,5 +59,13 @@ export const TeamRepository = {
 
   Delete: async (teamId) => {
     return prisma.team.delete({ where: { id: teamId } });
-  }
+  },
+
+  IsMember: async (teamId, userId) => {
+    const membership = await prisma.userTeam.findFirst({
+      where: { teamId, userId },
+      select: { id: true },
+    });
+    return !!membership;
+  },
 };

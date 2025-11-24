@@ -50,6 +50,7 @@ export const TopicRepository = {
   GetSubtopicById: async (subtopicId) => {
     return await prisma.subtopic.findUnique({
       where: { id: subtopicId },
+      include: { topic: { select: { teamId: true } } },
     });
   },
 
