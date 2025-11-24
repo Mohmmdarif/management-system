@@ -24,24 +24,12 @@ export const TeamService = {
     return team;
   },
 
-  updateTeam: async (teamId, userId, data) => {
-    const membership = await TeamRepository.FindMembership(teamId, userId);
-    if (!membership) throw new CustomError(403, "You are not a member of this team");
-
-    if (!["OWNER", "ADMIN"].includes(membership.role)) {
-      throw new CustomError(403, "You are not allowed to perform this action");
-    }
-
+  updateTeam: async (teamId, data) => {
     const updatedTeam = await TeamRepository.Update(teamId, data);
     return updatedTeam;
   },
 
-  deleteTeam: async (teamId, userId) => {
-    const membership = await TeamRepository.FindMembership(teamId, userId);
-    if (!membership) throw new CustomError(403, "You are not a member of this team");
-
-    if (membership.role !== "OWNER") throw new CustomError(403, "Only the OWNER can delete the team");
-
+  deleteTeam: async (teamId) => {
     return await TeamRepository.Delete(teamId);
   },
 };

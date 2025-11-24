@@ -34,10 +34,35 @@ export const TopicRepository = {
   },
 
   // Subtopic
-  CreateSubtopic: async (payload) => {
+  CreateSubtopic: async (topicId, payload) => {
     const createdSubtopic = await prisma.subtopic.create({
-      data: payload,
+      data: { title: payload.title, description: payload.description, topicId },
     });
     return createdSubtopic;
+  },
+
+  GetSubtopicsByTopic: async (topicId) => {
+    return await prisma.subtopic.findMany({
+      where: { topicId },
+    });
+  },
+
+  GetSubtopicById: async (subtopicId) => {
+    return await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+    });
+  },
+
+  UpdateSubtopic: async (subtopicId, data) => {
+    return await prisma.subtopic.update({
+      where: { id: subtopicId },
+      data,
+    });
+  },
+
+  DeleteSubtopic: async (subtopicId) => {
+    return await prisma.subtopic.delete({
+      where: { id: subtopicId },
+    });
   },
 };

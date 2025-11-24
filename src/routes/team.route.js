@@ -1,14 +1,15 @@
 import express from 'express';
 import { verifyToken } from "../middlewares/auth.middleware.js";
-// import rbacMiddleware, { UserRole } from "../middlewares/rbac.middleware";
 import { TeamController } from '../controllers/team.controller.js';
+import { rbacTeam, TeamRoleAccess } from "../middlewares/rbac.middleware.js";
+
 
 const router = express.Router();
 
-router.post("/create", verifyToken, TeamController.createTeam);
+router.post("/", verifyToken, TeamController.createTeam);
 router.get("/", verifyToken, TeamController.getMyTeams);
-router.get("/:teamId/details", verifyToken, TeamController.getTeamDetails);
-router.put("/:teamId/update", verifyToken, TeamController.updateTeam);
-router.delete("/:teamId/delete", verifyToken, TeamController.deleteTeam);
+router.get("/:teamId", verifyToken, TeamController.getTeamDetails);
+router.put("/:teamId", verifyToken, rbacTeam([TeamRoleAccess.MANAGER]), TeamController.updateTeam);
+router.delete("/:teamId", verifyToken, rbacTeam([TeamRoleAccess.MANAGER]), TeamController.deleteTeam);
 
 export default router;

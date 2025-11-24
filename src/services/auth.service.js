@@ -5,7 +5,7 @@ import { generateToken } from "../utils/jwt.js";
 
 export const AuthService = {
   CreateUser: async (payload) => {
-    const { email, username, password, name, role } = payload;
+    const { email, username, password, name } = payload;
 
     const existingUser = await AuthRepository.FindByEmail(email);
 
@@ -20,7 +20,6 @@ export const AuthService = {
       username,
       name,
       password: hashedPassword,
-      ...(role ? { role } : {}),
     });
 
     const { password: userPassword, ...userWithoutPassword } = user;
@@ -51,7 +50,6 @@ export const AuthService = {
       email: user.email,
       name: user.name,
       username: user.username,
-      role: user.role,
     };
 
     const token = generateToken(data);

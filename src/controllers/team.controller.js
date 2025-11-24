@@ -60,9 +60,8 @@ export const TeamController = {
   updateTeam: async (req, res, _next) => {
     try {
       const { teamId } = req.params;
-      const { userId } = req.user;
 
-      const updatedTeam = await TeamService.updateTeam(teamId, userId, req.body);
+      const updatedTeam = await TeamService.updateTeam(teamId, req.body);
 
       res.status(200).json({
         success: true,

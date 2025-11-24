@@ -9,8 +9,12 @@ export const TeamRepository = {
         description,
         members: {
           create: {
-            userId: ownerId,
-            role: "OWNER",
+            role: "MANAGER",
+            user: {
+              connect: {
+                id: ownerId
+              }
+            }
           },
         },
       },
@@ -39,7 +43,6 @@ export const TeamRepository = {
                 username: true,
                 name: true,
                 avatarUrl: true,
-                role: true,
                 createdAt: true,
                 updatedAt: true
               }
@@ -48,20 +51,6 @@ export const TeamRepository = {
         }
       },
     });
-  },
-
-  FindMembership: async (teamId, userId) => {
-    return await prisma.userTeam.findFirst({
-      where: { teamId, userId },
-    });
-  },
-
-  IsMember: async (teamId, userId) => {
-    const membership = await prisma.userTeam.findFirst({
-      where: { teamId, userId },
-      select: { id: true },
-    });
-    return !!membership;
   },
 
   Update: async (teamId, data) => {

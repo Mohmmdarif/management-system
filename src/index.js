@@ -25,8 +25,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api", authRoutes);
-app.use("/api/team", teamRoutes);
-app.use("/api/topic", topicRoutes);
+app.use("/api/teams", teamRoutes);
+app.use("/api/teams", topicRoutes);
 
 app.use(
   (err, req, res, next) => {
