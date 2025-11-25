@@ -68,4 +68,11 @@ export const TeamRepository = {
     });
     return !!membership;
   },
+
+  FindMembership: async (teamId, userId) => {
+    return prisma.userTeam.findFirst({
+      where: { teamId, userId },
+      select: { id: true, role: true },
+    });
+  },
 };

@@ -6,7 +6,7 @@ import { CustomError } from "../utils/customError.js";
 
 export const TaskService = {
   createTask: async (ownerId, subtopicId, payload) => {
-    const { title, description, priority, dueDate, assigneeId } = payload;
+    const { title, description, priority, startDate, dueDate, assigneeId } = payload;
 
     const subtopic = await TopicRepository.GetSubtopicById(subtopicId);
     if (!subtopic) throw new CustomError(404, "Subtopic not found");
@@ -22,6 +22,7 @@ export const TaskService = {
       title,
       description,
       priority,
+      startDate,
       dueDate,
       assigneeId,
       ownerId,
@@ -30,4 +31,65 @@ export const TaskService = {
 
     return task;
   },
+
+  getTasksBySubtopic: async (subtopicId) => {
+    const tasks = await TaskRepository.GetBySubtopic(subtopicId);
+    return tasks;
+  },
+
+  getTaskById: async (taskId) => {
+    const task = await TaskRepository.GetById(taskId);
+    if (!task) throw new CustomError(404, "Task not found");
+    return task;
+  },
+
+  updateTask: async (taskId, data) => {
+    const task = await TaskRepository.GetById(taskId);
+    if (!task) throw new CustomError(404, "Task not found");
+
+    const updatedTask = await TaskRepository.Update(taskId, data);
+    return updatedTask;
+  },
+
+  deleteTask: async (taskId) => {
+    const task = await TaskRepository.GetById(taskId);
+    if (!task) throw new CustomError(404, "Task not found");
+
+    await TaskRepository.Delete(taskId);
+
+    return;
+  },
+
+  updateTaskStatus: async (userId, teamId, taskId, status) => {
+    const task = await TaskRepository.GetById(taskId);
+    if (!task) throw new CustomError(404, "Task not found");
+
+    const membership = await TeamRepository.FindMembership(teamId, userId);
+    if (!membership) throw new CustomError(403, "You are not a member of this team");
+
+    if (status === "APPROVED" && membership.role !== "MANAGER") {
+      throw new CustomError(403, "Only manager can approve tasks");
+    }
+
+    const updatedTask = await TaskRepository.UpdateStatus(taskId, status);
+
+    return updatedTask;
+  },
+
+  updateTaskProgress: async (userId, teamId, taskId, progress) => {
+    const task = await TaskRepository.GetById(taskId);
+    if (!task) throw new CustomError(404, "Task not found");
+
+    const isMember = await TeamRepository.IsMember(teamId, userId);
+    console.log(task.assigneeId, userId);
+    if (!isMember) throw new CustomError(400, "Assignee must be a member of the team");
+
+    if (task.assigneeId !== userId) {
+      throw new CustomError(403, "You are not authorized to update this task");
+    }
+
+    const updatedTask = await TaskRepository.UpdateProgress(taskId, progress);
+
+    return updatedTask;
+  }
 };
