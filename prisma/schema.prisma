@@ -110,12 +110,31 @@ model Task {
 }
 
 model Comment {
+  id       String  @id @default(uuid())
+  body     String?
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId String
+
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId String
+
+  parent   Comment?  @relation("CommentReply", fields: [parentId], references: [id])
+  parentId String?
+  replies  Comment[] @relation("CommentReply")
+
+  attachments CommentAttachment[]
+
+  createdAt DateTime @default(now())
+}
+
+model CommentAttachment {
   id        String   @id @default(uuid())
-  body      String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  taskId    String
+  url       String
+  filename  String
+  mimeType  String?
+  size      Int?
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
   createdAt DateTime @default(now())
 }
 
