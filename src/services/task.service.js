@@ -67,7 +67,7 @@ export const TaskService = {
     const membership = await TeamRepository.FindMembership(teamId, userId);
     if (!membership) throw new CustomError(403, "You are not a member of this team");
 
-    if (status === "APPROVED" && membership.role !== "MANAGER") {
+    if (["SUBMITTED", "APPROVED"].includes(status) && membership.role !== "MANAGER") {
       throw new CustomError(403, "Only manager can approve tasks");
     }
 
